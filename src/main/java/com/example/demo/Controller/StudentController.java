@@ -27,6 +27,16 @@ public class StudentController {
         return  new ResponseEntity<>(studentService.findById(id), HttpStatus.OK);
     }
 
+    @GetMapping("Byname/{name}")
+    public ResponseEntity<Student> findByName(@PathVariable String name){
+        return  new ResponseEntity<>(studentService.findByName(name), HttpStatus.OK);
+    }
+
+    @GetMapping("gpa/{gpa}")
+    public ResponseEntity<List<Student>>  findByName(@PathVariable Double gpa){
+        return  new ResponseEntity<>(studentService.findByGpa(gpa), HttpStatus.OK);
+    }
+
     @PostMapping
     public ResponseEntity<Student> save(@RequestBody Student student){
 

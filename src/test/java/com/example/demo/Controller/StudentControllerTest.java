@@ -31,20 +31,21 @@ class StudentControllerTest {
     @MockBean
     StudentService studentService;
 
-    Student student1, student2;
+    Student student1, student2 ,student3;
 
     @BeforeEach
     void setup(){
         student1 = Student.builder().id(1).name("Esayas").gpa(3.5).build();
         student2 = Student.builder().name("Samuel").gpa(3.5).build();
+        student3 = Student.builder().name("ayoub").gpa(3.8).build();
 
     }
 
 
     @Test
     void findAll() throws Exception {
-        List<Student> studentList = Arrays.asList(student1,student2);
-        Mockito.when(studentService.findAll()).thenReturn(List.of(student1,student2));
+        List<Student> studentList = Arrays.asList(student1,student2,student3);
+        Mockito.when(studentService.findAll()).thenReturn(List.of(student1,student2,student3));
 
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/students")
@@ -58,6 +59,32 @@ class StudentControllerTest {
     }
 
     @Test
+    void findByGpa() throws Exception {
+        List<Student> studentList = Arrays.asList(student1,student2);
+        Mockito.when(studentService.findByGpa(3.5)).thenReturn(List.of(student1,student2));
+
+        mockMvc.perform(
+                        MockMvcRequestBuilders.get("/students/gpa/3.5")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .accept(MediaType.APPLICATION_JSON)
+                ).andExpect(MockMvcResultMatchers.content().json(objectMapper.writeValueAsString(studentList)))
+                .andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
+    }
+    @Test
+    void findByName() throws Exception {
+
+        Mockito.when(studentService.findByName(student2.getName())).thenReturn(student2);
+
+        mockMvc.perform(
+                        MockMvcRequestBuilders.get("/students/Byname/"+ student2.getName())
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .accept(MediaType.APPLICATION_JSON)
+                ).andExpect(MockMvcResultMatchers.content().json(objectMapper.writeValueAsString(student2)))
+                .andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
+    }
+
+
+    @Test
     void findById() throws Exception {
 
         Mockito.when(studentService.findById(student1.getId())).thenReturn(student1);
@@ -68,9 +95,9 @@ class StudentControllerTest {
                         .accept(MediaType.APPLICATION_JSON)
         ).andExpect(MockMvcResultMatchers.content().json(objectMapper.writeValueAsString(student1)))
                 .andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
-
-
     }
+
+
 
 
     @Test
@@ -107,8 +134,6 @@ class StudentControllerTest {
 
     @Test
     void testDeleteById() throws Exception {
-
-
 
         mockMvc.perform(
                 MockMvcRequestBuilders.delete("/students/"+student1.getId())

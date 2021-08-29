@@ -26,22 +26,22 @@ class StudentServiceImplTest {
     @InjectMocks
     StudentServiceImpl studentService;
 
-    Student student1, student2;
+    Student student1, student2 ,student3;
 
     @BeforeEach
     void setup(){
         student1 = Student.builder().id(1).name("Esayas").gpa(3.5).build();
         student2 = Student.builder().name("Samuel").gpa(3.5).build();
-
+        student3 = Student.builder().name("ayoub").gpa(3.8).build();
     }
 
 
     @Test
     void findAll() {
-        List<Student> studentList = Arrays.asList(student1,student2);
-        Mockito.when(studentRepository.findAll()).thenReturn(studentList);
+        List<Student> studentListAll = Arrays.asList(student1,student2,student3);
+        Mockito.when(studentRepository.findAll()).thenReturn(studentListAll);
 
-        assertEquals(studentList, studentService.findAll());
+        assertEquals(studentListAll, studentService.findAll());
 
     }
 
@@ -54,6 +54,19 @@ class StudentServiceImplTest {
 
     }
 
+    @Test
+    void testFindByGpa() {
+        List<Student> studentList = Arrays.asList(student1,student2);
+        Mockito.when(studentRepository.findByGpa(3.5)).thenReturn(studentList);
+        assertEquals(studentList, studentService.findByGpa(3.5));
+    }
+
+    @Test
+    void testFindByName(){
+        student2 = studentRepository.save(student2);
+        assertEquals(student2, studentService.findByName("Samuel"));
+    }
+    
     @Test
     void save() {
         Mockito.when(studentRepository.save(student1)).thenReturn(student1);

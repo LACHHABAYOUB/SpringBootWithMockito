@@ -25,6 +25,16 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
+    public Student findByName(String name) {
+        return studentRepository.findByName(name);
+    }
+    @Override
+    public List<Student> findByGpa(Double gpa) {
+        return studentRepository.findByGpa(gpa);
+    }
+
+
+    @Override
     public Student save(Student student) {
         return studentRepository.save(student);
     }
